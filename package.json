@@ -1,0 +1,18 @@
+{
+  "name": "url-shortener",
+  "version": "1.0.0",
+  "main": "./build/index.js",
+  "scripts": {
+    "test": "echo \"TODO: tests\" && exit 1",
+    "build": "tsc",
+    "dev": "node ./build/index.js",
+    "start": "tsc && npm run dev"
+  },
+  "keywords": [],
+  "author": "baoobab",
+  "license": "ISC",
+  "description": "Simple Rest API for url shortening, with analytics and db",
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
