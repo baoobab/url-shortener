@@ -1,6 +1,5 @@
 import express, {Application} from 'express';
 import dotenv from 'dotenv';
-import {Database} from "./services/db.service";
 import shortenUrlsRouter from "./routes/shortenUrls.route";
 
 async function bootstrap() {

@@ -1,7 +1,6 @@
 // @ts-ignore тк у либы не настроена типизация
 import generateHash from 'random-hash';
 import {Database} from "./db.service";
-import {getInfo} from "../controllers/shortenUrls.controller";
 import {UserFriendlyDbUrlDto} from "../dto/user-friendly-db-url.dto";
 
 export const shortenUrl = async (protocol: string, host: string, port: number, originalUrl: string) => {
@@ -45,6 +44,20 @@ export const getUrlInfo = async (hash: string) => {
 
         return result
     } catch (error) {
-        console.error('service err getOriginalUrl')
+        console.error('service err getUrlInfo')
+    }
+}
+
+export const delShortUrl = async (hash: string) => {
+    try {
+        const urlData = await Database.get(hash)
+        if (!urlData) {
+            return false;
+        }
+
+        await Database.del(hash)
+        return true;
+    } catch (error) {
+        console.error('service err delShortUrl')
     }
 }
