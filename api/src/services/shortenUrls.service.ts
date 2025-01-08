@@ -3,14 +3,17 @@ import generateHash from 'random-hash';
 import {Database} from "./db.service";
 import {UserFriendlyDbUrlDto} from "../dto/user-friendly-db-url.dto";
 
-export const shortenUrl = async (protocol: string, host: string, port: number, originalUrl: string) => {
+export const shortenUrl = async (protocol: string, host: string, port: number, originalUrl: string, ttl?: number) => {
     try {
+        const options = {ttl: NaN}
         const hash = generateHash({length: 6})
 
+        if (Number(ttl) > 0) options.ttl = Number(ttl);
+
         if (originalUrl.startsWith("https://") || originalUrl.startsWith("http://")) {
-            await Database.set(hash, originalUrl)
+            await Database.set(hash, originalUrl, options)
         } else {
-            await Database.set(hash, "http://" + originalUrl)
+            await Database.set(hash, "http://" + originalUrl, options)
         }
 
 
@@ -22,9 +25,16 @@ export const shortenUrl = async (protocol: string, host: string, port: number, o
 
 export const getOriginalUrl = async (hash: string) => {
     try {
-        return await Database.get(hash)
+        const urlData = await Database.getWithMeta(hash)
+        if (urlData) {
+            if (urlData.meta.expiresAt != null && urlData.meta.expiresAt <= Date.now()) {
+                throw new Error("Url has expired");
+            }
+        }
+        return urlData?.value
     } catch (error) {
         console.error('service err getOriginalUrl')
+        throw error;
     }
 }
 
@@ -36,9 +46,10 @@ export const getUrlInfo = async (hash: string) => {
             return null;
         }
 
-        let result: UserFriendlyDbUrlDto = {
+        const result: UserFriendlyDbUrlDto = {
             originalUrl: info.value,
             clickCount: info.meta.clickCount,
+            expiresAt: info.meta.expiresAt ? new Date(info.meta.expiresAt) : null,
             createdAt: new Date(info.meta.createdAt)
         }
 
