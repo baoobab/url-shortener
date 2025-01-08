@@ -1,13 +1,13 @@
 import express, {Application} from 'express';
 import dotenv from 'dotenv';
-// import {initDatabase} from "./src/utils/db.init";
-// import BooksRoutes from "./src/routes/books.routes";
+import {Database} from "./services/db.service";
+import shortenUrlsRouter from "./routes/shortenUrls.route";
 
 async function bootstrap() {
     dotenv.config()
 
     const app: Application = express()
-    const PORT = Number(process.env.API_PORT) || 3000
+    const PORT = Number(process.env.API_PORT)
 
 
     // const specs = swaggerJsDoc(options)
@@ -17,10 +17,8 @@ async function bootstrap() {
     //     swaggerUi.setup(specs)
     // )
 
-    await initDatabase()
-
     app.use(express.json())
-    app.use('/books', BooksRoutes)
+    app.use('/', shortenUrlsRouter)
 
 
     app

@@ -3,16 +3,22 @@
   "version": "1.0.0",
   "main": "./build/index.js",
   "scripts": {
-    "test": "echo \"TODO: tests\" && exit 1",
-    "build": "tsc",
+    "test": "echo \"Error: no tests\" && exit 1",
+    "build": "tsc --outDir ./build",
     "dev": "node ./build/index.js",
-    "start": "tsc && npm run dev"
+    "start": "npm run build && npm run dev"
   },
   "keywords": [],
   "author": "baoobab",
   "license": "ISC",
   "description": "Simple Rest API for url shortening, with analytics and db",
   "devDependencies": {
+    "@types/express": "^5.0.0",
     "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "random-hash": "^4.0.1"
   }
 }
