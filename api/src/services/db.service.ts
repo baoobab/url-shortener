@@ -1,6 +1,11 @@
+import {SavedDbUrlDto} from "../dto/saved-db-url.dto";
+import {MetaDbUrlDto} from "../dto/meta-db-url.dto";
+import {UpdateMetaDbUrlDto} from "../dto/update-meta-db-url.dto";
+
+
 // БД, которая хранит данные в кэше
 export class Database {
-    private static cache: any = {}; // здесь будем хранить все данные
+    private static cache: Record<string, SavedDbUrlDto> = {}; // здесь будем хранить все данные
     static ready = true; // для того чтобы задавать состояние базы
 
     // подключение и отключение базы
@@ -38,10 +43,15 @@ export class Database {
 
     // метод добавления данных в базу
     static async set(key: string, value: any, options?: { ttl: number }) {
-        Database.cache[key] = {
-            value,
+        const meta: MetaDbUrlDto = {
+            clickCount: 0,
             ttl: options?.ttl ? options.ttl : -1,
             createdAt: Date.now(),
+        }
+
+        Database.cache[key] = {
+            value,
+            meta: meta
         };
     }
 
@@ -51,7 +61,7 @@ export class Database {
 
     // метод получения данных из базы
     static async get(key: string): Promise<string | null> {
-        const data = Database.cache[key] || {};
+        const data = Database.cache[key] || {}
 
         return typeof data.value !== 'undefined' ? data.value : null;
     }
@@ -60,13 +70,43 @@ export class Database {
         return Database.get(key);
     }
 
+    // метод обновления метаданных
+    static async updateMeta(key: string, options: UpdateMetaDbUrlDto) {
+        const oldData = Database.cache[key]
+        if (oldData) {
+            Database.cache[key] = {
+                value: oldData.value,
+                meta: {
+                    clickCount: options.clickCount ? options.clickCount : oldData.meta.clickCount,
+                    ttl: options.ttl ? options.ttl : oldData.meta.ttl,
+                    createdAt: oldData.meta.createdAt,
+                }
+            }
+        }
+    }
+
+    async updateMeta(key: string, options: UpdateMetaDbUrlDto) {
+        await Database.set(key, options);
+    }
+
+    // метод получения данных, включая метаданные из базы
+    static async getWithMeta(key: string): Promise<SavedDbUrlDto | null> {
+        const data = Database.cache[key] || {}
+
+        return typeof data.value !== 'undefined' ? data : null;
+    }
+
+    async getWithMeta(key: string) {
+        return Database.getWithMeta(key);
+    }
+
     // срок хранения ключа в базе
     ttl(key: string) {
-        return Database.cache[key].ttl;
+        return Database.cache[key].meta.ttl;
     }
 
     static ttl(key: string) {
-        return Database.cache[key].ttl || null;
+        return Database.cache[key].meta.ttl || null;
     }
 
     // удаление данных по ключу

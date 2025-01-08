@@ -1,11 +1,11 @@
 import {Request, Response} from 'express';
-import {getOriginalUrl, shortenUrl} from "../services/shortenUrls.service";
+import {getOriginalUrl, getUrlInfo, shortenUrl} from "../services/shortenUrls.service";
 
-export const shorten = async (req: Request, res: Response) => {
+export const makeShorten = async (req: Request, res: Response) => {
     const originalUrl = req.body.originalUrl
 
     if (!originalUrl) {
-        res.status(400).json({ error: "originalUrl is required" })
+        res.status(400).json({error: 'originalUrl is required'})
         return;
     }
 
@@ -17,7 +17,7 @@ export const shorten = async (req: Request, res: Response) => {
         res.status(200).json(shortenedUrl)
     } catch (error) {
         console.error('Error shortening URL:', error)
-        res.status(500).json({ error: 'Failed to shorten URL' });
+        res.status(500).json({error: 'Failed to shorten URL'});
     }
 }
 
@@ -28,13 +28,30 @@ export const get = async (req: Request, res: Response) => {
         const originalUrl = await getOriginalUrl(hash)
 
         if (!originalUrl) {
-            res.status(404)
+            res.status(404).json({error: 'Url not found'});
             return;
         }
 
         res.status(200).redirect(originalUrl)
     } catch (error) {
         console.error('Error redirecting:', error)
-        res.status(500).json({ error: 'Failed to redirect' });
+        res.status(500).json({error: 'Failed to redirect'});
+    }
+}
+
+export const getInfo = async (req: Request, res: Response) => {
+    try {
+        const hash = req.params.hash
+        const info = await getUrlInfo(hash)
+
+        if (!info) {
+            res.status(404).json({error: 'Url not found'});
+            return;
+        }
+
+        res.status(200).json(info)
+    } catch (error) {
+        console.error('Error getting info:', error)
+        res.status(500).json({error: 'Failed to getting info'});
     }
 }
