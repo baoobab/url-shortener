@@ -15,6 +15,9 @@ export class Database {
     // метод добавления данных в базу
     static async set(key: string, value: any, options?: { ttl: number }) {
         const dateNow = Date.now()
+        if (options?.ttl && options?.ttl < 0) {
+            options.ttl = NaN
+        }
 
         const meta: MetaDbUrlDto = {
             clickCount: 0,
@@ -57,6 +60,10 @@ export class Database {
     // метод обновления метаданных
     static async updateMeta(key: string, options: UpdateMetaDbUrlDto) {
         const oldData = Database.cache[key]
+        if (options?.ttl && options?.ttl < 0) {
+            return;
+        }
+
         if (oldData) {
             Database.cache[key] = {
                 value: oldData.value,
