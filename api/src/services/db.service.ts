@@ -1,8 +1,8 @@
-import {SavedDbUrlDto} from "../dto/saved-db-url.dto";
-import {MetaDbUrlDto} from "../dto/meta-db-url.dto";
-import {UpdateMetaDbUrlDto} from "../dto/update-meta-db-url.dto";
-import {SavedDbMetricDto} from "../dto/saved-db-metric.dto";
-import {MetaDbMetricDto} from "../dto/meta-db-metric.dto";
+import {SavedDbUrlDto} from "../../dto/saved-db-url.dto";
+import {MetaDbUrlDto} from "../../dto/meta-db-url.dto";
+import {UpdateMetaDbUrlDto} from "../../dto/update-meta-db-url.dto";
+import {SavedDbMetricDto} from "../../dto/saved-db-metric.dto";
+import {MetaDbMetricDto} from "../../dto/meta-db-metric.dto";
 
 
 // бд, которая хранит данные в кэше

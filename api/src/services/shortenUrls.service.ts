@@ -1,9 +1,9 @@
 // @ts-ignore тк у либы не настроена типизация
 import generateHash from 'random-hash';
 import {Database} from "./db.service";
-import {UserFriendlyUrlDto} from "../dto/user-friendly-url.dto";
-import {UserFriendlyMetricDto} from "../dto/user-friendly-metric.dto";
-import {UserFriendlyMetricMetaDto} from "../dto/user-friendly-metric-meta.dto";
+import {UserFriendlyUrlDto} from "../../dto/user-friendly-url.dto";
+import {UserFriendlyMetricDto} from "../../dto/user-friendly-metric.dto";
+import {UserFriendlyMetricMetaDto} from "../../dto/user-friendly-metric-meta.dto";
 
 export const shortenUrl = async (protocol: string, host: string, port: number, originalUrl: string, ttl?: number) => {
     try {
