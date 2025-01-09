@@ -8,7 +8,7 @@ import {UserFriendlyMetricMetaDto} from "../../dto/user-friendly-metric-meta.dto
 export const shortenUrl = async (protocol: string, host: string, port: number, originalUrl: string, ttl?: number) => {
     try {
         const options = {ttl: NaN}
-        const hash = generateHash({length: 6})
+        const hash = generateHash({length: Number(process.env.SHORT_URL_HASH_LENGTH) || 6})
 
         if (Number(ttl) > 0) options.ttl = Number(ttl);
 
@@ -58,6 +58,7 @@ export const getUrlInfo = async (hash: string) => {
 
 export const getUrlAnalyticsInfo = async (hash: string) => {
     try {
+        const ipArrSize = Number(process.env.ANALYTICS_IP_ARRAY_LENGTH) || 5
         const info = await Database.getWithMeta(hash) //  собираем число переходов
         const dbMetrics = await Database.getMetrics(hash)
         const userFriendlyMetrics: UserFriendlyMetricMetaDto[] = []
@@ -65,9 +66,9 @@ export const getUrlAnalyticsInfo = async (hash: string) => {
         if (!info) return null;
         if (dbMetrics) {
             const slicedDbMetrics =
-                dbMetrics.slice(-5).sort((a, b) => {
-                return b.meta.createdAt - a.meta.createdAt
-            })
+                dbMetrics.slice(-ipArrSize).sort((a, b) => {
+                    return b.meta.createdAt - a.meta.createdAt
+                })
 
             slicedDbMetrics.map(item => {
                 const ufItem: UserFriendlyMetricMetaDto = {
