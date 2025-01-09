@@ -64,12 +64,18 @@ export const getUrlAnalyticsInfo = async (hash: string) => {
 
         if (!info) return null;
         if (dbMetrics) {
-            dbMetrics.slice(dbMetrics.length - 5).map(item => {
+            const slicedDbMetrics =
+                dbMetrics.slice(-5).sort((a, b) => {
+                return b.meta.createdAt - a.meta.createdAt
+            })
+
+            slicedDbMetrics.map(item => {
                 const ufItem: UserFriendlyMetricMetaDto = {
                     ip: item.value,
                     clickedAt: new Date(item.meta.createdAt)
                 }
                 userFriendlyMetrics.push(ufItem)
+                return item
             })
         }
 
