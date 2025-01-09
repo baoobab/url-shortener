@@ -9,12 +9,12 @@ export const linkExpirationMiddleware = async (req: Request, res: Response, next
         const urlData = await Database.getWithMeta(hash)
 
         if (!urlData) {
-            res.status(404).send('Link not found')
+            res.status(404).json({error: 'Url not found'})
             return;
         }
 
         if (urlData.meta.expiresAt && urlData.meta.expiresAt < Date.now()) {
-            res.status(410).send('Link has expired')
+            res.status(410).json({error: 'Link has expired'})
             return;
         }
 

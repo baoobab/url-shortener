@@ -1,5 +1,11 @@
 import {Request, Response} from 'express';
-import {delShortUrl, getOriginalUrl, getUrlInfo, shortenUrl} from "../services/shortenUrls.service";
+import {
+    delShortUrl,
+    getOriginalUrl,
+    getUrlAnalyticsInfo,
+    getUrlInfo,
+    shortenUrl
+} from "../services/shortenUrls.service";
 
 export const makeShorten = async (req: Request, res: Response) => {
     const originalUrl = req.body.originalUrl
@@ -60,6 +66,23 @@ export const getInfo = async (req: Request, res: Response) => {
     } catch (error) {
         console.error('Error getting info:', error)
         res.status(500).json({error: 'Failed to getting info'});
+    }
+}
+
+export const getAnalyticsInfo = async (req: Request, res: Response) => {
+    try {
+        const hash = req.params.hash
+        const info = await getUrlAnalyticsInfo(hash)
+
+        if (!info) {
+            res.status(404).json({error: 'Url not found'});
+            return;
+        }
+
+        res.status(200).json(info)
+    } catch (error) {
+        console.error('Error getting analytics info:', error)
+        res.status(500).json({error: 'Failed to getting analytics info'});
     }
 }
 

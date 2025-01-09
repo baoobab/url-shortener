@@ -14,11 +14,13 @@
   "description": "Simple Rest API for url shortening, with analytics and db",
   "devDependencies": {
     "@types/express": "^5.0.0",
+    "@types/request-ip": "^0.0.41",
     "typescript": "^5.7.2"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
-    "random-hash": "^4.0.1"
+    "random-hash": "^4.0.1",
+    "request-ip": "^3.3.0"
   }
 }

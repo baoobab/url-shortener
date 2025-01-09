@@ -1,7 +1,9 @@
 // @ts-ignore тк у либы не настроена типизация
 import generateHash from 'random-hash';
 import {Database} from "./db.service";
-import {UserFriendlyDbUrlDto} from "../dto/user-friendly-db-url.dto";
+import {UserFriendlyUrlDto} from "../dto/user-friendly-url.dto";
+import {UserFriendlyMetricDto} from "../dto/user-friendly-metric.dto";
+import {UserFriendlyMetricMetaDto} from "../dto/user-friendly-metric-meta.dto";
 
 export const shortenUrl = async (protocol: string, host: string, port: number, originalUrl: string, ttl?: number) => {
     try {
@@ -26,11 +28,6 @@ export const shortenUrl = async (protocol: string, host: string, port: number, o
 export const getOriginalUrl = async (hash: string) => {
     try {
         const urlData = await Database.getWithMeta(hash)
-        if (urlData) {
-            if (urlData.meta.expiresAt != null && urlData.meta.expiresAt <= Date.now()) {
-                throw new Error("Url has expired");
-            }
-        }
         return urlData?.value
     } catch (error) {
         console.error('service err getOriginalUrl')
@@ -46,11 +43,40 @@ export const getUrlInfo = async (hash: string) => {
             return null;
         }
 
-        const result: UserFriendlyDbUrlDto = {
+        const result: UserFriendlyUrlDto = {
             originalUrl: info.value,
             clickCount: info.meta.clickCount,
             expiresAt: info.meta.expiresAt ? new Date(info.meta.expiresAt) : null,
             createdAt: new Date(info.meta.createdAt)
+        }
+
+        return result
+    } catch (error) {
+        console.error('service err getUrlInfo')
+    }
+}
+
+export const getUrlAnalyticsInfo = async (hash: string) => {
+    try {
+        const info = await Database.getWithMeta(hash) //  собираем число переходов
+        const dbMetrics = await Database.getMetrics(hash)
+        const userFriendlyMetrics: UserFriendlyMetricMetaDto[] = []
+
+        if (!info) return null;
+        if (dbMetrics) {
+            dbMetrics.slice(dbMetrics.length - 5).map(item => {
+                const ufItem: UserFriendlyMetricMetaDto = {
+                    ip: item.value,
+                    clickedAt: new Date(item.meta.createdAt)
+                }
+                userFriendlyMetrics.push(ufItem)
+            })
+        }
+
+        const result: UserFriendlyMetricDto = {
+            originalUrl: info.value,
+            clickCount: info.meta.clickCount,
+            metrics: userFriendlyMetrics
         }
 
         return result
