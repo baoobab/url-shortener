@@ -56,7 +56,7 @@ export const get = async (req: Request, res: Response) => {
 
         res.status(302).redirect(originalUrl)
     } catch (error) {
-        console.error('Error redirecting:', error)
+        console.error('error redirecting:', error)
         res.status(500).json({
             success: false,
             error: ERRORS_MESSAGES.INTERNAL_SERVER_ERROR,
