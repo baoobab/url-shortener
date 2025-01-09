@@ -1,11 +1,11 @@
 {
   "name": "url-shortener",
   "version": "1.0.0",
-  "main": "./build/index.js",
+  "main": "./build/src/index.js",
   "scripts": {
     "test": "echo \"Error: no tests\" && exit 1",
     "build": "tsc --outDir ./build",
-    "dev": "node ./build/index.js",
+    "dev": "node ./build/src/index.js",
     "start": "npm run build && npm run dev"
   },
   "keywords": [],
