@@ -12,6 +12,7 @@ Simple Rest API for url shortening, with analytics and db
 ### Preparing
 1. Clone the repo `git clone https://github.com/baoobab/url-shortener.git`
 2. Install dependencies `npm install`
+3. Set-up .env file by following `.env.example`
 
 ### Run using docker
 ``docker-compose up -d``
