@@ -6,13 +6,10 @@ export const clickCounterMiddleware = async (req: Request, res: Response, next: 
     const urlData = await Database.getWithMeta(hash)
 
     if (!urlData) {
-        console.error("clickCounterMiddleware error: url data not found")
-
-        next();
+        res.status(404).json({error: 'Url not found'})
         return;
     }
 
     Database.updateMeta(hash, {clickCount: urlData.meta.clickCount + 1})
-
     next();
 }
