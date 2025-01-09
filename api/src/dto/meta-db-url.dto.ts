@@ -1,5 +1,5 @@
 export interface MetaDbUrlDto {
     readonly clickCount: number,
-    readonly ttl: number, // пока не важно
+    readonly expiresAt: number | null,
     readonly createdAt: number,
 }
