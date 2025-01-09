@@ -2,6 +2,7 @@
 
 ### Info
 Simple Rest API for url shortening, with analytics and db
+<br>While running, docs on `your.host:port/api-docs`
 
 ### Requirements
 1. node: >=14.17

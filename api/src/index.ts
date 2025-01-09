@@ -1,5 +1,7 @@
 import express, {Application} from 'express';
 import dotenv from 'dotenv';
+import swaggerUi from 'swagger-ui-express';
+import swaggerJsDoc, {Options} from 'swagger-jsdoc';
 import shortenUrlsRouter from "./routes/shortenUrls.route";
 
 async function bootstrap() {
@@ -9,12 +11,29 @@ async function bootstrap() {
     const PORT = Number(process.env.API_PORT)
 
 
-    // const specs = swaggerJsDoc(options)
-    // app.use(
-    //     "/api-docs",
-    //     swaggerUi.serve,
-    //     swaggerUi.setup(specs)
-    // )
+    const options: Options = {
+        definition: {
+            openapi: "3.0.0",
+            info: {
+                title: "Simple Rest API for url shortening, with analytics and db",
+                version: "1.0.0",
+            },
+            tags: [
+                {
+                    name: 'Shorten URLs',
+                    description: 'Операции со ссылками',
+                },
+            ],
+        },
+        apis: ["**/*.ts"],
+    }
+
+    const specs = swaggerJsDoc(options)
+    app.use(
+        "/api-docs",
+        swaggerUi.serve,
+        swaggerUi.setup(specs)
+    )
 
     app.use(express.json())
     app.use('/', shortenUrlsRouter)
