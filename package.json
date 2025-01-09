@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "./build/src/index.js",
   "scripts": {
-    "test": "echo \"Error: no tests\" && exit 1",
     "build": "tsc --outDir ./build",
     "dev": "node ./build/src/index.js",
     "start": "npm run build && npm run dev"
@@ -15,12 +14,20 @@
   "devDependencies": {
     "@types/express": "^5.0.0",
     "@types/request-ip": "^0.0.41",
-    "typescript": "^5.7.2"
+    "typescript": "^5.7.3"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
     "random-hash": "^4.0.1",
     "request-ip": "^3.3.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baoobab/url-shortener.git"
+  },
+  "bugs": {
+    "url": "https://github.com/baoobab/url-shortener/issues"
+  },
+  "homepage": "https://github.com/baoobab/url-shortener#readme"
 }
